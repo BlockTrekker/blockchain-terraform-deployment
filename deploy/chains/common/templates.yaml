@@ -1,101 +1,82 @@
 templates:
-  _bitcoind: &_bitcoind
-    chart: blockchain-k8s/bitcoind
-    #may be dynamic from artifact
+
+  # _parity: &_parity
+  #   chart: blockchain-k8s/parity
+  #   #may be dynamic from artifact
+  #   version: {{ env "version" | default "" }}
+  #   labels:
+  #     chart: parity
+  #   missingFileHandler: Debug
+  #   kubeContext: {{ env "KUBE_CONTEXT" | default ( printf "baas-gke-%s-baas0" .Environment.Name ) }}
+  
+  # parity: &parity
+  #   <<: *_parity
+  #   labels:
+  #     chain: eth
+  #   values:
+  #     - ../common/values-parity.yaml
+  #     - values-{{`{{ .Release.Name }}`}}.yaml
+  #     - values-{{`{{ .Release.Name }}`}}-custom.yaml
+
+  # Geth execution client for L1 EVM
+  _geth: &_geth
+    chart: blockchain-k8s/geth
     version: {{ env "version" | default "" }}
     labels:
-      chart: bitcoind
+      client: execution
+      chart: geth
     missingFileHandler: Debug
     kubeContext: {{ env "KUBE_CONTEXT" | default ( printf "baas-gke-%s-baas0" .Environment.Name ) }}
 
-  bitcoind: &bitcoind
-    <<: *_bitcoind
+  # Goerli L1 testnet EVM execution client
+  geth-goerli: &geth-goerli
+    <<: *_geth
     labels:
-      chain: btc
+      chain: 5
     values:
-      - ../common/values-bitcoind.yaml
+      - ../common/values-geth.yaml
+      - ../common/values-geth-goerli.yaml
       - values-{{`{{ .Release.Name }}`}}.yaml
       - values-{{`{{ .Release.Name }}`}}-custom.yaml
 
-  dogecoind: &dogecoind
-    <<: *_bitcoind
-    labels:
-      chain: doge
-    values:
-      - ../common/values-dogecoind.yaml
-      - values-{{`{{ .Release.Name }}`}}.yaml
-      - values-{{`{{ .Release.Name }}`}}-custom.yaml
-
-  bitcoin-cash: &bitcoin-cash
-    <<: *_bitcoind
-    labels:
-      chain: bch
-    values:
-      - ../common/values-bitcoin-cash.yaml
-      - values-{{`{{ .Release.Name }}`}}.yaml
-      - values-{{`{{ .Release.Name }}`}}-custom.yaml
-
-  dashd: &dashd
-    <<: *_bitcoind
-    labels:
-      chain: dash
-    values:
-      - ../common/values-dashd.yaml
-      - values-{{`{{ .Release.Name }}`}}.yaml
-      - values-{{`{{ .Release.Name }}`}}-custom.yaml
-
-  litecoind: &litecoind
-    <<: *_bitcoind
-    labels:
-      chain: ltc
-    values:
-      - ../common/values-litecoind.yaml
-      - values-{{`{{ .Release.Name }}`}}.yaml
-      - values-{{`{{ .Release.Name }}`}}-custom.yaml
-
-  zcashd: &zcashd
-    <<: *_bitcoind
-    labels:
-      chain: zec
-    values:
-      - ../common/values-zcashd.yaml
-      - values-{{`{{ .Release.Name }}`}}.yaml
-      - values-{{`{{ .Release.Name }}`}}-custom.yaml
-
-  _parity: &_parity
-    chart: blockchain-k8s/parity
-    #may be dynamic from artifact
+  # Prysm consensus client for L1 EVM
+  _prysm: &_prysm
+    chart: blockchain-k8s/prysm
     version: {{ env "version" | default "" }}
     labels:
-      chart: parity
+      client: consensus
+      chart: prysm
     missingFileHandler: Debug
     kubeContext: {{ env "KUBE_CONTEXT" | default ( printf "baas-gke-%s-baas0" .Environment.Name ) }}
 
-  parity: &parity
-    <<: *_parity
+  # Praeter L1 testnet EVM consensus client
+  prysm-praeter: &prysm-praeter
+    <<: *_prysm
     labels:
-      chain: eth
+      chain: 5
     values:
-      - ../common/values-parity.yaml
+      - ../common/values-prysm.yaml
+      - ../common/values-prysm-praeter.yaml
       - values-{{`{{ .Release.Name }}`}}.yaml
       - values-{{`{{ .Release.Name }}`}}-custom.yaml
-
-  parity-etc: &parity-etc
-    <<: *_parity
+    
+  # Avalanche Nitro L2 client
+  _nitro: &_nitro
+    chart: blockchain-k8s/nitro
+    version: {{ env "version" | default "" }}
     labels:
-      chain: etc
-    values:
-      - ../common/values-parity.yaml
-      - ../common/values-parity-etc.yaml
-      - values-{{`{{ .Release.Name }}`}}.yaml
-      - values-{{`{{ .Release.Name }}`}}-custom.yaml
+      client: l2
+      chart: nitro
+    missingFileHandler: Debug
+    kubeContext: {{ env "KUBE_CONTEXT" | default ( printf "baas-gke-%s-baas0" .Environment.Name ) }}
 
-  parity-keth: &parity-keth
-    <<: *_parity
+  # Arbitrum Nitro Goerli L2 testnet client
+  nitro-goerli: &_nitro
+    <<: *_nitro
     labels:
-      chain: kovan
+      chain: 42163
     values:
-      - ../common/values-parity.yaml
-      - ../common/values-parity-kovan.yaml
+      - ../common/values-nitro.yaml
+      - ../common/values-nitro-goerli.yaml
       - values-{{`{{ .Release.Name }}`}}.yaml
       - values-{{`{{ .Release.Name }}`}}-custom.yaml
