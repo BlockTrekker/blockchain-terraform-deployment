@@ -1,25 +1,34 @@
-{{- tpl (readFile "../common/repositories.yaml") . | nindent 0 }}
+{{ tpl (readFile "../common/repositories.yaml") . | nindent 0 }}
 
-{{- tpl (readFile "../common/helm-defaults.yaml") . | nindent 0 }}
+{{ tpl (readFile "../common/helm-defaults.yaml") . | nindent 0 }}
 
 environments:
   staging:
 
-{{- tpl (readFile "../common/templates.yaml") . | nindent 0 }}
+{{ tpl (readFile "../common/templates.yaml") . | nindent 0 }}
 
-releases:
-- name: staging-btc-0
-  namespace: staging-btc-0
-  <<: *bitcoind
 
-- name: staging-btc-1
-  namespace: staging-btc-1
-  <<: *bitcoind
+- name: staging-goerli-0
+  namespace: staging-goerli-0
+  <<: *geth-goerli
 
-- name: staging-eth-0
-  namespace: staging-eth-0
-  <<: *parity
+- name: staging-goerli-1
+  namespace: staging-goerli-1
+  <<: *geth-goerli
 
-- name: staging-eth-1
-  namespace: staging-eth-1
-  <<: *parity
+- name: staging-prysm-0
+  namespace: staging-prysm-0
+  <<: *prysm
+
+- name: staging-prysm-1
+  namespace: staging-prysm-1
+  <<: *prysm
+
+- name: staging-nitro-0
+  namespace: staging-nitro-0
+  <<: *nitro
+
+- name: staging-nitro-1
+  namespace: staging-nitro-1
+  <<: *nitro
+

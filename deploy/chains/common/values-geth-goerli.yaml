@@ -1,5 +1,5 @@
-parity:
-  chain: kovan
+geth:
+  chain: 5
 persistence:
   size: "500Gi"
 
@@ -10,6 +10,6 @@ affinity:
         podAffinityTerm:
           labelSelector:
             matchLabels:
-              app.kubernetes.io/name: "parity"
-              parity/chain: "kovan"
+              app.kubernetes.io/name: "geth"
+              geth/chain: "5"
           topologyKey: failure-domain.beta.kubernetes.io/zone

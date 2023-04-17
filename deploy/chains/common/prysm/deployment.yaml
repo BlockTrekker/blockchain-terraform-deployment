@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prysm-beacon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prysm-beacon
+  template:
+    metadata:
+      labels:
+        app: prysm-beacon
+    spec:
+      containers:
+      - name: prysm-beacon
+        image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
+        args:
+        - --http-web3provider=http://geth:8545
+        ports:
+        - containerPort: 4000
+        volumeMounts:
+        - name: prysm-beacon-data
+          mountPath: /data
+      volumes:
+      - name: prysm-beacon-data
+        persistentVolumeClaim:
+          claimName: prysm-beacon-data-claim

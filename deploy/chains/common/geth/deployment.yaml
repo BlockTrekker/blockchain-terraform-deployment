@@ -23,3 +23,10 @@ spec:
         - --http.api=eth,net,web3
         ports:
         - containerPort: 8545
+        volumeMounts:
+        - name: geth-data
+          mountPath: /root/.ethereum
+      volumes:
+      - name: geth-data
+        persistentVolumeClaim:
+          claimName: geth-data-claim
